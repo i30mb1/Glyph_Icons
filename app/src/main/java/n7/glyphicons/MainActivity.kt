@@ -12,13 +12,16 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import com.nothing.ketchum.GlyphMatrixFrame
 import com.nothing.ketchum.GlyphMatrixManager
-import com.nothing.ketchum.GlyphMatrixObject
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import n7.glyphicons.ui.theme.GlyphIconsTheme
 
 class MainActivity : ComponentActivity() {
     private var glyphMatrixManager: GlyphMatrixManager? = null
+    private var animationPlayer: GlyphAnimationPlayer? = null
+    private val scope = CoroutineScope(Dispatchers.Main)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,24 +46,30 @@ class MainActivity : ComponentActivity() {
         glyphMatrixManager?.init(object : GlyphMatrixManager.Callback {
             override fun onServiceConnected(componentName: ComponentName?) {
                 glyphMatrixManager?.register(packageName)
-                showDot()
+                playPuckAnimation()
             }
 
             override fun onServiceDisconnected(componentName: ComponentName?) {}
         })
     }
 
-    private fun showDot() {
-        try {
-            val frame = GlyphController.createDotFrame(this)
-            glyphMatrixManager?.setMatrixFrame(frame)
-        } catch (e: Exception) {
-            e.printStackTrace()
+    private fun playPuckAnimation() {
+        glyphMatrixManager?.let { manager ->
+            val adapter = LottieToGlyphAdapter(this)
+            animationPlayer = GlyphAnimationPlayer(manager, adapter)
+
+            scope.launch {
+                val animation = adapter.loadAnimation(R.raw.puck)
+                animation?.let {
+                    animationPlayer?.playAnimation(it, loop = true, fps = 30)
+                }
+            }
         }
     }
 
     override fun onDestroy() {
         super.onDestroy()
+        animationPlayer?.stop()
         glyphMatrixManager?.unInit()
     }
 }

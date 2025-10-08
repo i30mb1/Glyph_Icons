@@ -36,6 +36,7 @@ android {
 
 dependencies {
     implementation(files("../libs/glyph-matrix-sdk-1.0.aar"))
+    implementation("com.airbnb.android:lottie:6.6.10")
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)

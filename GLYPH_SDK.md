@@ -37,6 +37,18 @@ unInit() // отвязка от сервиса
 - Длинное нажатие: кастомные действия
 - Touch events для специфичной обработки
 
+## Утилиты
+
+### Добавление паддингов к GIF
+
+Для обложки toy используйте ImageMagick (без потери качества):
+```bash
+magick input.gif -bordercolor transparent -border 5x5 output.gif
+magick input.gif -bordercolor transparent -border 10x20 output.gif  # разные паддинги
+```
+
+Альтернативно - Python скрипт `add_padding_to_gif.py` (может снизить качество)
+
 ## Источник
 
 https://github.com/Nothing-Developer-Programme/GlyphMatrix-Developer-Kit

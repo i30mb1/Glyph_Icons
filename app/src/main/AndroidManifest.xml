@@ -25,6 +25,10 @@
             </intent-filter>
         </activity>
 
+        <activity
+            android:name=".ToyIntroductionActivity"
+            android:exported="false" />
+
         <service
             android:name=".GlyphToyService"
             android:exported="true">
@@ -37,12 +41,24 @@
                 android:resource="@string/toy_name"/>
 
             <meta-data
+                android:name="com.nothing.glyph.toy.image"
+                android:resource="@drawable/puck"/>
+
+            <meta-data
                 android:name="com.nothing.glyph.toy.summary"
                 android:resource="@string/toy_summary"/>
 
             <meta-data
-                android:name="com.nothing.glyph.toy.image"
-                android:resource="@drawable/toy_preview"/>
+                android:name="com.nothing.glyph.toy.introduction"
+                android:value="n7.glyphicons.ToyIntroductionActivity"/>
+
+            <meta-data
+                android:name="com.nothing.glyph.toy.longpress"
+                android:value="1"/>
+
+            <meta-data
+                android:name="com.nothing.glyph.toy.aod_support"
+                android:value="1"/>
         </service>
     </application>
 

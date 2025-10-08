@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Glyph Icons</string>
+    <string name="toy_name">Dot</string>
+    <string name="toy_summary">Simple dot display</string>
 </resources>

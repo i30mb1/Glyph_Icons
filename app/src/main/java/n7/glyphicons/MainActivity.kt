@@ -1,5 +1,6 @@
 package n7.glyphicons
 
+import android.content.ComponentName
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -11,12 +12,20 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import com.nothing.ketchum.GlyphMatrixFrame
+import com.nothing.ketchum.GlyphMatrixManager
+import com.nothing.ketchum.GlyphMatrixObject
 import n7.glyphicons.ui.theme.GlyphIconsTheme
 
 class MainActivity : ComponentActivity() {
+    private var glyphMatrixManager: GlyphMatrixManager? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+
+        initGlyphMatrix()
+
         setContent {
             GlyphIconsTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
@@ -27,6 +36,32 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
+    }
+
+    private fun initGlyphMatrix() {
+        glyphMatrixManager = GlyphMatrixManager.getInstance(this)
+        glyphMatrixManager?.init(object : GlyphMatrixManager.Callback {
+            override fun onServiceConnected(componentName: ComponentName?) {
+                glyphMatrixManager?.register(packageName)
+                showDot()
+            }
+
+            override fun onServiceDisconnected(componentName: ComponentName?) {}
+        })
+    }
+
+    private fun showDot() {
+        try {
+            val frame = GlyphController.createDotFrame(this)
+            glyphMatrixManager?.setMatrixFrame(frame)
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        glyphMatrixManager?.unInit()
     }
 }
 

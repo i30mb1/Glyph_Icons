@@ -1,47 +1,59 @@
 package n7.glyphicons
 
 import android.app.Service
+import android.content.ComponentName
 import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.os.IBinder
+import androidx.core.graphics.BitmapCompat
+import com.nothing.ketchum.GlyphMatrixFrame
 import com.nothing.ketchum.GlyphMatrixManager
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import n7.glyphicons.R
+import com.nothing.ketchum.GlyphMatrixObject
 
 class GlyphToyService : Service() {
 
     private lateinit var glyphMatrixManager: GlyphMatrixManager
-    private var animationPlayer: GlyphAnimationPlayer? = null
-    private val scope = CoroutineScope(Dispatchers.Main)
 
     override fun onCreate() {
         super.onCreate()
         glyphMatrixManager = GlyphMatrixManager.getInstance(applicationContext)
+        glyphMatrixManager.init(object : GlyphMatrixManager.Callback {
+            override fun onServiceConnected(componentName: ComponentName?) {
+                glyphMatrixManager.register(packageName)
+                showCenterPixel()
+            }
+
+            override fun onServiceDisconnected(componentName: ComponentName?) {}
+        })
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        playPuckAnimation()
         return START_STICKY
     }
 
     override fun onBind(intent: Intent?): IBinder? = null
 
-    private fun playPuckAnimation() {
-        val adapter = LottieToGlyphAdapter(this)
-        animationPlayer = GlyphAnimationPlayer(glyphMatrixManager, adapter)
+    private fun showCenterPixel() {
+        val matrix = IntArray(25 * 25) { 0 }
+        matrix[12 * 25 + 12] = 100
 
-        scope.launch {
-            val animation = adapter.loadAnimation(R.raw.puck)
-            animation?.let {
-                animationPlayer?.playAnimation(it, loop = true, fps = 30)
-            }
-        }
+        val imageSource = BitmapFactory.decodeResource(resources, R.drawable.ff)
+        val text = GlyphMatrixObject.Builder()
+            .setImageSource(imageSource)
+//            .setScale(7)
+//            .setPosition(0,9)
+            .build()
+
+        val frame = GlyphMatrixFrame.Builder()
+            .addMid(text)
+            .build(applicationContext)
+
+        glyphMatrixManager.setMatrixFrame(frame)
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        animationPlayer?.stop()
         glyphMatrixManager.unInit()
     }
 }

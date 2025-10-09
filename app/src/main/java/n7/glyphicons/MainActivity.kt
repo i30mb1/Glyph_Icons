@@ -15,11 +15,11 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import com.nothing.ketchum.GlyphMatrixManager
 import n7.glyphicons.ui.theme.GlyphIconsTheme
 
 class MainActivity : ComponentActivity() {
-    private var glyphMatrixManager: GlyphMatrixManager? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,11 +44,6 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        glyphMatrixManager?.unInit()
-    }
 }
 
 @Composable
@@ -61,7 +56,7 @@ fun SetupScreen(
         contentAlignment = Alignment.Center
     ) {
         Button(onClick = onInstallWidget) {
-            Text("Установить виджет")
+            Text(stringResource(R.string.activate_toy))
         }
     }
 }

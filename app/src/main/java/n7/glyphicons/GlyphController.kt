@@ -17,7 +17,9 @@ class GlyphController(
     }
 
     fun clear() {
+        glyphManager.turnOff()
         glyphManager.closeAppMatrix()
+        glyphManager.unInit()
     }
 
     fun createDotFrame(context: Context): GlyphMatrixFrame {

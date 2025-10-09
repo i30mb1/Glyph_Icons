@@ -1,39 +1,38 @@
 package n7.glyphicons
 
-import android.content.ComponentName
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import com.airbnb.lottie.compose.LottieAnimation
+import com.airbnb.lottie.compose.LottieCompositionSpec
+import com.airbnb.lottie.compose.LottieConstants
+import com.airbnb.lottie.compose.rememberLottieComposition
 import com.nothing.ketchum.GlyphMatrixManager
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import n7.glyphicons.ui.theme.GlyphIconsTheme
 
 class MainActivity : ComponentActivity() {
     private var glyphMatrixManager: GlyphMatrixManager? = null
-    private var animationPlayer: GlyphAnimationPlayer? = null
-    private val scope = CoroutineScope(Dispatchers.Main)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
 
-        initGlyphMatrix()
-
         setContent {
             GlyphIconsTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "Android",
+                    LottieAnimationScreen(
                         modifier = Modifier.padding(innerPadding)
                     )
                 }
@@ -41,51 +40,36 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-    private fun initGlyphMatrix() {
-        glyphMatrixManager = GlyphMatrixManager.getInstance(this)
-        glyphMatrixManager?.init(object : GlyphMatrixManager.Callback {
-            override fun onServiceConnected(componentName: ComponentName?) {
-                glyphMatrixManager?.register(packageName)
-                playPuckAnimation()
-            }
-
-            override fun onServiceDisconnected(componentName: ComponentName?) {}
-        })
-    }
-
-    private fun playPuckAnimation() {
-        glyphMatrixManager?.let { manager ->
-            val adapter = LottieToGlyphAdapter(this)
-            animationPlayer = GlyphAnimationPlayer(manager, adapter)
-
-            scope.launch {
-                val animation = adapter.loadAnimation(R.raw.puck)
-                animation?.let {
-                    animationPlayer?.playAnimation(it, loop = true, fps = 30)
-                }
-            }
-        }
-    }
-
     override fun onDestroy() {
         super.onDestroy()
-        animationPlayer?.stop()
         glyphMatrixManager?.unInit()
     }
 }
 
 @Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
+fun LottieAnimationScreen(modifier: Modifier = Modifier) {
+//    val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.anim))
+
+    Box(
         modifier = modifier
-    )
+            .fillMaxSize(),
+        contentAlignment = Alignment.Center
+    ) {
+//        LottieAnimation(
+//            composition = composition,
+//            iterations = LottieConstants.IterateForever,
+//            isPlaying = true,
+//            restartOnPlay = true,
+//            modifier = Modifier
+//                .size(300.dp)
+//        )
+    }
 }
 
 @Preview(showBackground = true)
 @Composable
-fun GreetingPreview() {
+fun LottieAnimationPreview() {
     GlyphIconsTheme {
-        Greeting("Android")
+        LottieAnimationScreen()
     }
 }

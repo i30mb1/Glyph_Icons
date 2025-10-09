@@ -5,7 +5,6 @@ import android.content.Context
 import android.util.Log
 import com.nothing.ketchum.GlyphMatrixFrame
 import com.nothing.ketchum.GlyphMatrixManager
-import com.nothing.ketchum.GlyphMatrixObject
 
 class GlyphController(
     private val context: Context,
@@ -17,15 +16,12 @@ class GlyphController(
         glyphManager.init(this)
     }
 
-    fun createDotFrame(context: Context): GlyphMatrixFrame {
-        val glyphObject = GlyphMatrixObject.Builder()
-            .setPosition(10, 10)
-            .setRawArray(intArrayOf(1))
-            .build()
+    fun clear() {
+        glyphManager.closeAppMatrix()
+    }
 
-        val puck = GlyphMatrixObject.Builder()
-            .setRawArray(
-                intArrayOf(
+    fun createDotFrame(context: Context): GlyphMatrixFrame {
+        val puckArray = intArrayOf(
                     0,
                     0,
                     0,
@@ -652,21 +648,23 @@ class GlyphController(
                     0,
                     0
                 )
-            )
-            .build()
 
         return GlyphMatrixFrame.Builder()
-            .addMid(glyphObject)
+            .addMid(puckArray)
             .build(context)
     }
 
     override fun onServiceConnected(p0: ComponentName?) {
         val frame = createDotFrame(context)
         glyphManager.setMatrixFrame(frame)
-        Log.d("N7", "onServiceConnected")
+        Log.d("N7", "onServiceConnected $p0")
     }
 
     override fun onServiceDisconnected(p0: ComponentName?) {
-        Log.d("N7", "onServiceDisconnected")
+        Log.d("N7", "onServiceDisconnected $p0")
+    }
+
+    fun onLongPress() {
+        Log.d("N7", "onLongPress")
     }
 }

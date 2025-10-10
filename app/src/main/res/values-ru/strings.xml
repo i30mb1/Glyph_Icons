@@ -1,5 +1,14 @@
 <resources>
+    <string name="toy_name">Flappy Box</string>
+    <string name="toy_summary">Аркадная игра с управлением наклоном на Glyph дисплее</string>
     <string name="activate_toy">Активировать игрушку</string>
     <string name="best_score">Лучший счёт: %d</string>
     <string name="hint_text">Иногда самое лучшее, что можно сделать — это ничего не делать.</string>
+
+    <string name="intro_title">Flappy Box</string>
+    <string name="intro_control">• Наклоняй телефон для управления птицей</string>
+    <string name="intro_obstacles">• Пролетай через препятствия</string>
+    <string name="intro_boost">• Зажми экран для ускорения (до 5x)</string>
+    <string name="intro_difficulty">• С каждыми 20 очками проход сужается</string>
+    <string name="intro_hardcore">• После 100 очков — hardcore режим</string>
 </resources>

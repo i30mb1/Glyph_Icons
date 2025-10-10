@@ -10,7 +10,7 @@ internal class GameConfigStorage(context: Context) {
         GameConfig.OBSTACLE_GAP_SIZE = prefs.getInt("gap_size", 10)
         GameConfig.OBSTACLE_SPAWN_INTERVAL = prefs.getFloat("spawn_interval", 2f)
         GameConfig.OBSTACLE_SPEED = prefs.getFloat("speed", 7f)
-        GameConfig.BIRD_SIZE = prefs.getInt("bird_size", 4)
+        GameConfig.BIRD_SIZE = prefs.getInt("bird_size", 2)
     }
 
     fun saveConfig() {

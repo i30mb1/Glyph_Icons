@@ -42,7 +42,7 @@
 
             <meta-data
                 android:name="com.nothing.glyph.toy.image"
-                android:resource="@drawable/puck"/>
+                android:resource="@drawable/icon"/>
 
             <meta-data
                 android:name="com.nothing.glyph.toy.summary"

@@ -37,11 +37,15 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.lifecycle.compose.LocalLifecycleOwner
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
@@ -69,7 +73,7 @@ class MainActivity : ComponentActivity() {
                 Scaffold(
                     modifier = Modifier.fillMaxSize(),
                     contentWindowInsets = WindowInsets(0, 0, 0, 0)
-                ) { _ ->
+                ) { paddingValues ->
                     SetupScreen(
                         modifier = Modifier.fillMaxSize(),
                         onInstallWidget = {
@@ -98,11 +102,20 @@ fun SetupScreen(
     onConfigChanged: () -> Unit
 ) {
     val context = androidx.compose.ui.platform.LocalContext.current
+    val configStorage = remember { n7.glyphicons.game.GameConfigStorage(context) }
+    val lifecycleOwner = LocalLifecycleOwner.current
+
     var gapSize by remember { mutableIntStateOf(n7.glyphicons.game.GameConfig.OBSTACLE_GAP_SIZE) }
     var spawnInterval by remember { mutableFloatStateOf(n7.glyphicons.game.GameConfig.OBSTACLE_SPAWN_INTERVAL) }
     var speed by remember { mutableFloatStateOf(n7.glyphicons.game.GameConfig.OBSTACLE_SPEED) }
     var birdSize by remember { mutableIntStateOf(n7.glyphicons.game.GameConfig.BIRD_SIZE) }
-    val bestScore = remember { n7.glyphicons.game.GameConfigStorage(context).getBestScore() }
+    var bestScore by remember { mutableIntStateOf(configStorage.getBestScore()) }
+
+    LaunchedEffect(lifecycleOwner) {
+        lifecycleOwner.lifecycle.repeatOnLifecycle(Lifecycle.State.RESUMED) {
+            bestScore = configStorage.getBestScore()
+        }
+    }
 
     Column(
         modifier = modifier

@@ -29,6 +29,7 @@ internal class GameRenderer {
             .setBrightness(GameConfig.SCORE_BRIGHTNESS)
             .build()
 
+        println(matrix.joinToString(","))
         return GlyphMatrixFrame.Builder()
             .addMid(matrix)
             .addTop(scoreObject)

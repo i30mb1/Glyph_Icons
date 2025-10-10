@@ -26,10 +26,10 @@ class GlyphController(
 ) : GlyphMatrixManager.Callback {
 
     private val glyphManager = GlyphMatrixManager.getInstance(context)
+    private val configStorage = n7.glyphicons.game.GameConfigStorage(context)
     private val gameState = GameState()
     private val gameRenderer = GameRenderer()
-    private val obstacleManager = ObstacleManager()
-    private val configStorage = n7.glyphicons.game.GameConfigStorage(context)
+    private val obstacleManager = ObstacleManager(configStorage.getBestScore())
 
     private lateinit var gyroController: GyroSensorController
     private lateinit var gameLoop: GameLoop

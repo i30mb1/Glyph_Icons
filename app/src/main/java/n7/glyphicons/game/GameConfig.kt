@@ -8,7 +8,7 @@ internal object GameConfig {
     var OBSTACLE_SPAWN_INTERVAL = 2f
     var OBSTACLE_SPEED = 7f
 
-    var BIRD_SIZE = 4
+    var BIRD_SIZE = 2
     const val BIRD_BRIGHTNESS = 1024
     const val OBSTACLE_BRIGHTNESS = 524
     const val SCORE_BRIGHTNESS = 10

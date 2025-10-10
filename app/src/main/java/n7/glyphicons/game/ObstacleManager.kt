@@ -3,7 +3,9 @@ package n7.glyphicons.game
 import android.util.Log
 import kotlin.random.Random
 
-internal class ObstacleManager {
+internal class ObstacleManager(
+    private val bestScore: Int
+) {
     private val obstacles = mutableListOf<Obstacle>()
     private var score = 0
     private var spawnTimer = 0f
@@ -47,7 +49,7 @@ internal class ObstacleManager {
                 val gapTop = obstacle.gapY - obstacle.gapSize / 2
                 val gapBottom = obstacle.gapY + obstacle.gapSize / 2
 
-                if (birdTop <= gapTop || birdBottom >= gapBottom) {
+                if (birdTop < gapTop || birdBottom > gapBottom) {
                     Log.e("N7", "COLLISION! Bird: Y=$birdY, Top=$birdTop, Bottom=$birdBottom, Size=$birdSize | Gap: Y=${obstacle.gapY}, Top=$gapTop, Bottom=$gapBottom, Size=${obstacle.gapSize}")
                     return true
                 }
@@ -88,14 +90,14 @@ internal class ObstacleManager {
         val minAllowedGapY = halfGap + 1
         val maxAllowedGapY = 25 - halfGap - 1
 
-        val gapY = if (score > 100) {
+        val gapY = if (bestScore > 100) {
             Random.nextInt(minAllowedGapY, maxAllowedGapY + 1)
         } else {
             val birdTop = centerY - halfBirdSize
             val birdBottom = centerY + halfBirdSize
 
-            val minGapY = (birdTop + halfGap).coerceAtLeast(minAllowedGapY)
-            val maxGapY = (birdBottom + halfGap).coerceAtMost(maxAllowedGapY)
+            val minGapY = (birdBottom - halfGap).coerceAtLeast(minAllowedGapY)
+            val maxGapY = (birdTop + halfGap).coerceAtMost(maxAllowedGapY)
 
             if (minGapY <= maxGapY) {
                 Random.nextInt(minGapY, maxGapY + 1)
@@ -109,7 +111,7 @@ internal class ObstacleManager {
 
         val gapTopEdge = gapY - halfGap
         val gapBottomEdge = gapY + halfGap
-        Log.d("N7", "Spawned: gapY=$gapY, gapSize=$currentGapSize, gapRange=[$gapTopEdge, $gapBottomEdge], score=$score, hardMode=${score > 100}")
+        Log.d("N7", "Spawned: gapY=$gapY, gapSize=$currentGapSize, gapRange=[$gapTopEdge, $gapBottomEdge], birdRange=[${centerY - halfBirdSize}, ${centerY + halfBirdSize}], score=$score")
     }
 
     private fun calculateCurrentGapSize(): Int {

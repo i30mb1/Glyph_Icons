@@ -14,6 +14,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.scan
 import n7.glyphicons.game.BirdRenderer
+import n7.glyphicons.game.GameConfig
 import n7.glyphicons.game.GameLoop
 import n7.glyphicons.game.GameState
 import n7.glyphicons.game.GyroSensorController
@@ -39,12 +40,11 @@ class GlyphController(
         gyroController = GyroSensorController(context)
 
         gyroController.sensorFlow
-            .map { sensor -> -sensor.y }
+            .map { sensor -> -sensor.x }
             .scan(0f) { prevSmoothed, current ->
-                val smoothingFactor = 0.3f
-                prevSmoothed * (1 - smoothingFactor) + current * smoothingFactor
+                prevSmoothed * (1 - GameConfig.SMOOTHING_FACTOR) + current * GameConfig.SMOOTHING_FACTOR
             }
-            .filter { abs(it) >= 0.01f }
+            .filter { abs(it) >= GameConfig.DEAD_ZONE_THRESHOLD }
             .onEach { delta ->
                 Log.d("N7", "Gyro delta: $delta, birdY before: ${gameState.birdY}")
                 gameState.updateBirdPosition(delta)

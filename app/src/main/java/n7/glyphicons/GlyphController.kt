@@ -13,12 +13,12 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.scan
-import n7.glyphicons.game.BirdRenderer
 import n7.glyphicons.game.GameConfig
 import n7.glyphicons.game.GameLoop
+import n7.glyphicons.game.GameRenderer
 import n7.glyphicons.game.GameState
 import n7.glyphicons.game.GyroSensorController
-import n7.glyphicons.game.SensorData
+import n7.glyphicons.game.ObstacleManager
 import kotlin.math.abs
 
 class GlyphController(
@@ -27,7 +27,8 @@ class GlyphController(
 
     private val glyphManager = GlyphMatrixManager.getInstance(context)
     private val gameState = GameState()
-    private val birdRenderer = BirdRenderer()
+    private val gameRenderer = GameRenderer()
+    private val obstacleManager = ObstacleManager()
 
     private lateinit var gyroController: GyroSensorController
     private lateinit var gameLoop: GameLoop
@@ -52,8 +53,8 @@ class GlyphController(
             }
             .launchIn(scope)
 
-        gameLoop = GameLoop {
-            updateFrame()
+        gameLoop = GameLoop { deltaTime ->
+            updateGame(deltaTime)
         }
     }
 
@@ -65,12 +66,29 @@ class GlyphController(
         glyphManager.unInit()
     }
 
-    private fun updateFrame() {
-        val frame = birdRenderer.render(context, gameState)
+    private fun updateGame(deltaTime: Float) {
+        if (!gameState.isGameOver) {
+            obstacleManager.update(deltaTime)
+
+            val previousScore = gameState.score
+            gameState.score = obstacleManager.getScore()
+
+            if (gameState.score > previousScore) {
+                gameState.decreaseBirdSize()
+            }
+
+            if (obstacleManager.checkCollision(gameState.birdY, gameState.birdSize)) {
+                gameState.isGameOver = true
+                Log.d("N7", "Game Over! Score: ${obstacleManager.getScore()}")
+            }
+        }
+
+        val frame = gameRenderer.render(context, gameState, obstacleManager.getObstacles())
         glyphManager.setMatrixFrame(frame)
     }
 
     override fun onServiceConnected(p0: ComponentName?) {
+        glyphManager.setGlyphMatrixTimeout(false)
         gameLoop.start()
         Log.d("N7", "onServiceConnected $p0")
     }
@@ -80,6 +98,13 @@ class GlyphController(
     }
 
     fun onLongPress() {
-        Log.d("N7", "onLongPress")
+        if (gameState.isGameOver) {
+            gameState.reset()
+            obstacleManager.reset()
+            Log.d("N7", "Game Reset")
+        } else {
+            gameState.increaseBirdSize()
+            Log.d("N7", "Bird size increased to ${gameState.birdSize}")
+        }
     }
 }

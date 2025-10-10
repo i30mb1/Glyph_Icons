@@ -13,8 +13,8 @@ internal class ObstacleManager {
     private val gapSize = GameConfig.OBSTACLE_GAP_SIZE
     private val obstacleWidth = 2
 
-    fun update(deltaTime: Float) {
-        spawnTimer += deltaTime
+    fun update(deltaTime: Float, speedMultiplier: Float = 1.0f) {
+        spawnTimer += deltaTime * speedMultiplier
 
         if (spawnTimer >= spawnInterval) {
             spawnTimer = 0f
@@ -22,12 +22,12 @@ internal class ObstacleManager {
         }
 
         obstacles.forEach { obstacle ->
-            obstacle.x -= obstacleSpeed * deltaTime
+            obstacle.x -= obstacleSpeed * speedMultiplier * deltaTime
         }
 
         obstacles.removeAll { it.x.toInt() + obstacleWidth < 0 }
 
-        Log.d("N7", "Obstacles count: ${obstacles.size}, timer: $spawnTimer")
+        Log.d("N7", "Obstacles count: ${obstacles.size}, timer: $spawnTimer, multiplier: $speedMultiplier")
     }
 
     fun checkCollision(birdY: Float, birdSize: Int): Boolean {

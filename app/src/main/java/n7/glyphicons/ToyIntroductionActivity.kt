@@ -16,6 +16,9 @@ import n7.glyphicons.ui.theme.GlyphIconsTheme
 class ToyIntroductionActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        n7.glyphicons.game.GameConfigStorage(this).loadConfig()
+
         setContent {
             GlyphIconsTheme {
                 Surface(

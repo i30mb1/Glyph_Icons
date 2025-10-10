@@ -44,9 +44,14 @@ import n7.glyphicons.ui.theme.GlyphIconsTheme
 
 class MainActivity : ComponentActivity() {
 
+    private lateinit var configStorage: n7.glyphicons.game.GameConfigStorage
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+
+        configStorage = n7.glyphicons.game.GameConfigStorage(this)
+        configStorage.loadConfig()
 
         setContent {
             GlyphIconsTheme {
@@ -61,6 +66,9 @@ class MainActivity : ComponentActivity() {
                                 )
                             }
                             startActivity(intent)
+                        },
+                        onConfigChanged = {
+                            configStorage.saveConfig()
                         }
                     )
                 }
@@ -72,7 +80,8 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun SetupScreen(
     modifier: Modifier = Modifier,
-    onInstallWidget: () -> Unit
+    onInstallWidget: () -> Unit,
+    onConfigChanged: () -> Unit
 ) {
     var gapSize by remember { mutableIntStateOf(n7.glyphicons.game.GameConfig.OBSTACLE_GAP_SIZE) }
     var spawnInterval by remember { mutableFloatStateOf(n7.glyphicons.game.GameConfig.OBSTACLE_SPAWN_INTERVAL) }
@@ -109,12 +118,14 @@ fun SetupScreen(
                 if (gapSize > 4) {
                     gapSize--
                     n7.glyphicons.game.GameConfig.OBSTACLE_GAP_SIZE = gapSize
+                    onConfigChanged()
                 }
             },
             onIncrease = {
                 if (gapSize < 15) {
                     gapSize++
                     n7.glyphicons.game.GameConfig.OBSTACLE_GAP_SIZE = gapSize
+                    onConfigChanged()
                 }
             }
         )
@@ -128,12 +139,14 @@ fun SetupScreen(
                 if (spawnInterval > 1f) {
                     spawnInterval -= 0.5f
                     n7.glyphicons.game.GameConfig.OBSTACLE_SPAWN_INTERVAL = spawnInterval
+                    onConfigChanged()
                 }
             },
             onIncrease = {
                 if (spawnInterval < 5f) {
                     spawnInterval += 0.5f
                     n7.glyphicons.game.GameConfig.OBSTACLE_SPAWN_INTERVAL = spawnInterval
+                    onConfigChanged()
                 }
             }
         )
@@ -147,12 +160,14 @@ fun SetupScreen(
                 if (speed > 3f) {
                     speed -= 1f
                     n7.glyphicons.game.GameConfig.OBSTACLE_SPEED = speed
+                    onConfigChanged()
                 }
             },
             onIncrease = {
                 if (speed < 15f) {
                     speed += 1f
                     n7.glyphicons.game.GameConfig.OBSTACLE_SPEED = speed
+                    onConfigChanged()
                 }
             }
         )
@@ -166,12 +181,14 @@ fun SetupScreen(
                 if (birdSize > 2) {
                     birdSize--
                     n7.glyphicons.game.GameConfig.BIRD_SIZE = birdSize
+                    onConfigChanged()
                 }
             },
             onIncrease = {
                 if (birdSize < 8) {
                     birdSize++
                     n7.glyphicons.game.GameConfig.BIRD_SIZE = birdSize
+                    onConfigChanged()
                 }
             }
         )

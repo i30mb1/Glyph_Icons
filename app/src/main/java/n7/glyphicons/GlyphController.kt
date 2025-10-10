@@ -68,14 +68,9 @@ class GlyphController(
 
     private fun updateGame(deltaTime: Float) {
         if (!gameState.isGameOver) {
-            obstacleManager.update(deltaTime)
+            obstacleManager.update(deltaTime, gameState.currentSpeedMultiplier)
 
-            val previousScore = gameState.score
             gameState.score = obstacleManager.getScore()
-
-            if (gameState.score > previousScore) {
-                gameState.decreaseBirdSize()
-            }
 
             if (obstacleManager.checkCollision(gameState.birdY, gameState.birdSize)) {
                 gameState.isGameOver = true
@@ -103,8 +98,8 @@ class GlyphController(
             obstacleManager.reset()
             Log.d("N7", "Game Reset")
         } else {
-            gameState.increaseBirdSize()
-            Log.d("N7", "Bird size increased to ${gameState.birdSize}")
+            gameState.increaseBoost()
+            Log.d("N7", "Boost increased to level ${gameState.boostLevel}, multiplier: ${gameState.currentSpeedMultiplier}")
         }
     }
 }

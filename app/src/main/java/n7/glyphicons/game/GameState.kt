@@ -4,7 +4,11 @@ internal class GameState {
     var birdY: Float = 12f
     var isGameOver: Boolean = false
     var score: Int = 0
-    var birdSize: Int = GameConfig.BIRD_SIZE
+    var boostLevel: Int = 0
+    val birdSize: Int
+        get() = GameConfig.BIRD_SIZE
+    val currentSpeedMultiplier: Float
+        get() = 1.0f + boostLevel * GameConfig.BOOST_INCREMENT
 
     private val minY = 2f
     private val maxY = 22f
@@ -15,13 +19,9 @@ internal class GameState {
         }
     }
 
-    fun increaseBirdSize() {
-        birdSize++
-    }
-
-    fun decreaseBirdSize() {
-        if (birdSize > 1) {
-            birdSize--
+    fun increaseBoost() {
+        if (boostLevel < GameConfig.MAX_BOOST_LEVEL) {
+            boostLevel++
         }
     }
 
@@ -29,6 +29,6 @@ internal class GameState {
         birdY = 12f
         isGameOver = false
         score = 0
-        birdSize = GameConfig.BIRD_SIZE
+        boostLevel = 0
     }
 }

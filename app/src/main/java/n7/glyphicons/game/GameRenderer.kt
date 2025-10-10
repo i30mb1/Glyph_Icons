@@ -15,10 +15,17 @@ internal class GameRenderer {
         renderObstacles(obstacles)
         renderBird(gameState.birdY, gameState.birdSize)
 
+        val scoreText = gameState.score.toString()
+        val scoreX = when {
+            scoreText.length >= 3 -> 4
+            scoreText.length >= 2 -> 7
+            else -> 10
+        }
+
         val scoreObject = GlyphMatrixObject.Builder()
-            .setText(gameState.score.toString())
+            .setText(scoreText)
             .setScale(1)
-            .setPosition(10, 19)
+            .setPosition(scoreX, 19)
             .setBrightness(GameConfig.SCORE_BRIGHTNESS)
             .build()
 

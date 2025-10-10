@@ -9,7 +9,11 @@ internal object GameConfig {
     var OBSTACLE_SPEED = 7f
 
     var BIRD_SIZE = 4
-    const val BIRD_BRIGHTNESS = 1024 // 0 - 2024
-    const val OBSTACLE_BRIGHTNESS = 524 // 0 - 2024
-    const val SCORE_BRIGHTNESS = 40 // 0 - 255
+    const val BIRD_BRIGHTNESS = 1024
+    const val OBSTACLE_BRIGHTNESS = 524
+    const val SCORE_BRIGHTNESS = 10
+    const val BOOST_INDICATOR_BRIGHTNESS = 50
+
+    const val BOOST_INCREMENT = 0.57f
+    const val MAX_BOOST_LEVEL = 7
 }

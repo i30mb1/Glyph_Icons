@@ -3,4 +3,6 @@
     <string name="toy_name">Dot</string>
     <string name="toy_summary">Simple dot display</string>
     <string name="activate_toy">Activate Toy</string>
+    <string name="best_score">Best Score: %d</string>
+    <string name="hint_text">Sometimes the best thing to do is nothing.</string>
 </resources>

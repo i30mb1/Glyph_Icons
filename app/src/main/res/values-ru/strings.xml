@@ -1,3 +1,5 @@
 <resources>
     <string name="activate_toy">Активировать игрушку</string>
+    <string name="best_score">Лучший счёт: %d</string>
+    <string name="hint_text">Иногда самое лучшее, что можно сделать — это ничего не делать.</string>
 </resources>

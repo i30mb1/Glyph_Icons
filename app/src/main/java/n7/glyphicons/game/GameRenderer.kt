@@ -13,7 +13,7 @@ internal class GameRenderer {
         matrix.fill(0)
 
         renderObstacles(obstacles)
-        renderBird(gameState.birdY, gameState.birdSize)
+        renderBird(gameState.birdY, gameState.birdSize, gameState.currentSpeedMultiplier)
 
         val scoreText = gameState.score.toString()
         val scoreX = when {
@@ -35,10 +35,12 @@ internal class GameRenderer {
             .build(context)
     }
 
-    private fun renderBird(birdY: Float, birdSize: Int) {
+    private fun renderBird(birdY: Float, birdSize: Int, speedMultiplier: Float) {
         val centerY = birdY.toInt()
         val centerX = 12
         val halfSize = birdSize / 2
+
+        val brightness = calculateBirdBrightness(speedMultiplier)
 
         for (y in 0 until birdSize) {
             for (x in 0 until birdSize) {
@@ -47,9 +49,19 @@ internal class GameRenderer {
 
                 if (targetY in 0 until 25 && targetX in 0 until 25) {
                     val matrixIndex = targetY * 25 + targetX
-                    matrix[matrixIndex] = GameConfig.BIRD_BRIGHTNESS
+                    matrix[matrixIndex] = brightness
                 }
             }
+        }
+    }
+
+    private fun calculateBirdBrightness(speedMultiplier: Float): Int {
+        return when {
+            speedMultiplier >= 5.0f -> 2048
+            speedMultiplier >= 4.0f -> 1550
+            speedMultiplier >= 3.0f -> 1050
+            speedMultiplier >= 2.0f -> 550
+            else -> 50
         }
     }
 

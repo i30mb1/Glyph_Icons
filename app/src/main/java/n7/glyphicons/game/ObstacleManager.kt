@@ -47,7 +47,8 @@ internal class ObstacleManager {
                 val gapTop = obstacle.gapY - obstacle.gapSize / 2
                 val gapBottom = obstacle.gapY + obstacle.gapSize / 2
 
-                if (birdTop < gapTop || birdBottom > gapBottom) {
+                if (birdTop <= gapTop || birdBottom >= gapBottom) {
+                    Log.e("N7", "COLLISION! Bird: Y=$birdY, Top=$birdTop, Bottom=$birdBottom, Size=$birdSize | Gap: Y=${obstacle.gapY}, Top=$gapTop, Bottom=$gapBottom, Size=${obstacle.gapSize}")
                     return true
                 }
             }
@@ -60,6 +61,7 @@ internal class ObstacleManager {
         }
 
         if (birdY < 0 || birdY > 25) {
+            Log.e("N7", "COLLISION! Bird out of bounds: Y=$birdY")
             return true
         }
 
@@ -77,9 +79,43 @@ internal class ObstacleManager {
     }
 
     private fun spawnObstacle() {
-        val gapY = Random.nextInt(gapSize / 2 + 2, 25 - gapSize / 2 - 2)
-        val obstacle = Obstacle(x = 25f, gapY = gapY, gapSize = gapSize)
+        val currentGapSize = calculateCurrentGapSize()
+        val centerY = 12
+        val halfGap = currentGapSize / 2
+        val birdSize = GameConfig.BIRD_SIZE
+        val halfBirdSize = birdSize / 2
+
+        val minAllowedGapY = halfGap + 1
+        val maxAllowedGapY = 25 - halfGap - 1
+
+        val gapY = if (score > 100) {
+            Random.nextInt(minAllowedGapY, maxAllowedGapY + 1)
+        } else {
+            val birdTop = centerY - halfBirdSize
+            val birdBottom = centerY + halfBirdSize
+
+            val minGapY = (birdTop + halfGap).coerceAtLeast(minAllowedGapY)
+            val maxGapY = (birdBottom + halfGap).coerceAtMost(maxAllowedGapY)
+
+            if (minGapY <= maxGapY) {
+                Random.nextInt(minGapY, maxGapY + 1)
+            } else {
+                centerY
+            }
+        }
+
+        val obstacle = Obstacle(x = 25f, gapY = gapY, gapSize = currentGapSize)
         obstacles.add(obstacle)
-        Log.d("N7", "Spawned obstacle at x=25, gapY=$gapY")
+
+        val gapTopEdge = gapY - halfGap
+        val gapBottomEdge = gapY + halfGap
+        Log.d("N7", "Spawned: gapY=$gapY, gapSize=$currentGapSize, gapRange=[$gapTopEdge, $gapBottomEdge], score=$score, hardMode=${score > 100}")
+    }
+
+    private fun calculateCurrentGapSize(): Int {
+        val reductions = score / 20
+        val minGapSize = GameConfig.BIRD_SIZE + 2
+        val reducedGapSize = gapSize - reductions
+        return reducedGapSize.coerceAtLeast(minGapSize)
     }
 }

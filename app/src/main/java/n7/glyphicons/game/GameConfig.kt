@@ -14,6 +14,6 @@ internal object GameConfig {
     const val SCORE_BRIGHTNESS = 10
     const val BOOST_INDICATOR_BRIGHTNESS = 50
 
-    const val BOOST_INCREMENT = 0.57f
-    const val MAX_BOOST_LEVEL = 7
+    const val BOOST_INCREMENT = 1.0f
+    const val MAX_BOOST_LEVEL = 4
 }

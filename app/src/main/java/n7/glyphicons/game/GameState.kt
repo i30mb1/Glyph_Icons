@@ -8,7 +8,12 @@ internal class GameState {
     val birdSize: Int
         get() = GameConfig.BIRD_SIZE
     val currentSpeedMultiplier: Float
-        get() = 1.0f + boostLevel * GameConfig.BOOST_INCREMENT
+        get() {
+            val baseMultiplier = 1.0f + boostLevel * GameConfig.BOOST_INCREMENT
+            val speedReductions = score / 50
+            val reducedMultiplier = baseMultiplier - speedReductions * GameConfig.BOOST_INCREMENT
+            return reducedMultiplier.coerceAtLeast(1.0f)
+        }
 
     private val minY = 2f
     private val maxY = 22f

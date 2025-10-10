@@ -29,6 +29,7 @@ class GlyphController(
     private val gameState = GameState()
     private val gameRenderer = GameRenderer()
     private val obstacleManager = ObstacleManager()
+    private val configStorage = n7.glyphicons.game.GameConfigStorage(context)
 
     private lateinit var gyroController: GyroSensorController
     private lateinit var gameLoop: GameLoop
@@ -74,7 +75,8 @@ class GlyphController(
 
             if (obstacleManager.checkCollision(gameState.birdY, gameState.birdSize)) {
                 gameState.isGameOver = true
-                Log.d("N7", "Game Over! Score: ${obstacleManager.getScore()}")
+                configStorage.saveBestScore(gameState.score)
+                Log.d("N7", "Game Over! Score: ${obstacleManager.getScore()}, Best: ${configStorage.getBestScore()}")
             }
         }
 

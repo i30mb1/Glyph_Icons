@@ -22,4 +22,15 @@ internal class GameConfigStorage(context: Context) {
             apply()
         }
     }
+
+    fun getBestScore(): Int {
+        return prefs.getInt("best_score", 0)
+    }
+
+    fun saveBestScore(score: Int) {
+        val currentBest = getBestScore()
+        if (score > currentBest) {
+            prefs.edit().putInt("best_score", score).apply()
+        }
+    }
 }

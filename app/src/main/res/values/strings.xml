@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Glyph Icons</string>
+    <string name="app_name" translatable="false">Flappy Box</string>
     <string name="toy_name">Flappy Box</string>
     <string name="toy_summary">Tilt-controlled arcade game on Glyph display</string>
     <string name="activate_toy">Activate Toy</string>

@@ -15,13 +15,11 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.width
@@ -30,6 +28,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
@@ -54,8 +53,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
-import com.nothing.ketchum.GlyphMatrixManager
 import n7.glyphicons.ui.theme.GlyphIconsTheme
+import java.util.Locale
 
 class MainActivity : ComponentActivity() {
 
@@ -72,8 +71,9 @@ class MainActivity : ComponentActivity() {
             GlyphIconsTheme {
                 Scaffold(
                     modifier = Modifier.fillMaxSize(),
+                    containerColor = Color.Black,
                     contentWindowInsets = WindowInsets(0, 0, 0, 0)
-                ) { paddingValues ->
+                ) {
                     SetupScreen(
                         modifier = Modifier.fillMaxSize(),
                         onInstallWidget = {
@@ -135,7 +135,7 @@ fun SetupScreen(
                 .padding(horizontal = 8.dp),
             shape = RoundedCornerShape(16.dp),
             colors = CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.surface
+                containerColor = Color(0xFF1A1A1A)
             ),
             elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
         ) {
@@ -149,7 +149,8 @@ fun SetupScreen(
                     text = stringResource(R.string.hint_text),
                     style = MaterialTheme.typography.headlineSmall,
                     textAlign = TextAlign.Center,
-                    textDecoration = if (bestScore > 100) TextDecoration.LineThrough else null
+                    textDecoration = if (bestScore > 100) TextDecoration.LineThrough else null,
+                    color = Color.White
                 )
             }
         }
@@ -158,7 +159,8 @@ fun SetupScreen(
 
         Text(
             text = stringResource(R.string.best_score, bestScore),
-            style = MaterialTheme.typography.titleMedium
+            style = MaterialTheme.typography.titleMedium,
+            color = Color.White
         )
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -170,7 +172,12 @@ fun SetupScreen(
 
         Spacer(modifier = Modifier.height(32.dp))
 
-        Button(onClick = onInstallWidget) {
+        Button(
+            onClick = onInstallWidget,
+            colors = ButtonDefaults.buttonColors(
+                containerColor = Color.Gray
+            )
+        ) {
             Text(stringResource(R.string.activate_toy))
         }
 
@@ -296,7 +303,7 @@ fun GamePreview(
             val gapBottom = gapY + gapSize / 2
 
             for (y in 0 until 25) {
-                if (y < gapTop || y > gapBottom) {
+                if (y !in gapTop..gapBottom) {
                     for (x in 0 until 2) {
                         val posX = (obstacleX + x) * cellSize
                         val posY = y * cellSize
@@ -325,7 +332,8 @@ fun ParameterControl(
     ) {
         Text(
             text = label,
-            style = MaterialTheme.typography.titleMedium
+            style = MaterialTheme.typography.titleMedium,
+            color = Color.White
         )
         Spacer(modifier = Modifier.height(8.dp))
         Row(
@@ -333,21 +341,22 @@ fun ParameterControl(
             horizontalArrangement = Arrangement.Center
         ) {
             OutlinedButton(onClick = onDecrease) {
-                Text("-")
+                Text("-", color = Color.White)
             }
             Spacer(modifier = Modifier.width(16.dp))
             Text(
                 text = when (value) {
-                    is Float -> String.format("%.1f", value)
+                    is Float -> "%.1f".format(Locale.US, value)
                     else -> value.toString()
                 },
                 style = MaterialTheme.typography.headlineMedium,
                 modifier = Modifier.width(80.dp),
-                textAlign = androidx.compose.ui.text.style.TextAlign.Center
+                textAlign = TextAlign.Center,
+                color = Color.White
             )
             Spacer(modifier = Modifier.width(16.dp))
             OutlinedButton(onClick = onIncrease) {
-                Text("+")
+                Text("+", color = Color.White)
             }
         }
     }

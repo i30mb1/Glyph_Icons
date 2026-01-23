@@ -7,21 +7,29 @@ import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 
 private val DarkColorScheme = darkColorScheme(
-    primary = White,
-    onPrimary = Black,
-    background = Black,
+    primary = DiscordBlurple,
+    onPrimary = White,
+    background = DiscordDarkest,
     onBackground = White,
-    surface = Black,
-    onSurface = White
+    surface = DiscordDarker,
+    onSurface = White,
+    surfaceVariant = DiscordDark,
+    onSurfaceVariant = White,
+    secondary = DiscordGray,
+    onSecondary = White
 )
 
 private val LightColorScheme = lightColorScheme(
-    primary = Black,
+    primary = DiscordBlurple,
     onPrimary = White,
     background = White,
-    onBackground = Black,
+    onBackground = DiscordDarkest,
     surface = White,
-    onSurface = Black
+    onSurface = DiscordDarkest,
+    surfaceVariant = DiscordGray,
+    onSurfaceVariant = White,
+    secondary = DiscordDark,
+    onSecondary = White
 )
 
 @Composable

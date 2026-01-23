@@ -1,5 +1,6 @@
 plugins {
     alias(libs.plugins.android.application)
+    alias(libs.plugins.android.android)
     alias(libs.plugins.kotlin.compose)
 }
 
@@ -25,12 +26,15 @@ android {
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
         }
     }
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
-    }
+
     buildFeatures {
         compose = true
+    }
+}
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
     }
 }
 

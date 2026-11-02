@@ -2,13 +2,21 @@
     <string name="toy_name">Flappy Box</string>
     <string name="toy_summary">Аркадная игра с управлением наклоном на Glyph дисплее</string>
     <string name="activate_toy">Активировать игрушку</string>
-    <string name="best_score">Лучший счёт: %d</string>
+    <string name="best_score">Рекорд</string>
     <string name="hint_text">Иногда самое лучшее, что можно сделать — это ничего не делать.</string>
 
+    <string name="main_hint">Наклоняй · зажми, чтобы ускориться</string>
+    <string name="main_preview_description">Превью Flappy Box на Glyph Matrix с текущими настройками</string>
+    <string name="settings_title">Настройки игры</string>
+    <string name="setting_gap">Размер прохода</string>
+    <string name="setting_spawn">Интервал препятствий, с</string>
+    <string name="setting_speed">Скорость</string>
+    <string name="setting_bird">Размер птицы</string>
+
     <string name="intro_title">Flappy Box</string>
-    <string name="intro_control">• Наклоняй телефон для управления птицей</string>
-    <string name="intro_obstacles">• Пролетай через препятствия</string>
-    <string name="intro_boost">• Зажми экран для ускорения (до 5x)</string>
-    <string name="intro_difficulty">• С каждыми 20 очками проход сужается</string>
-    <string name="intro_hardcore">• После 100 очков — hardcore режим</string>
+    <string name="intro_control">Наклоняй телефон, чтобы управлять птицей</string>
+    <string name="intro_obstacles">Пролетай через проходы</string>
+    <string name="intro_boost">Зажми кнопку Glyph для ускорения (до 5x)</string>
+    <string name="intro_difficulty">Каждые 20 очков проход сужается</string>
+    <string name="intro_hardcore">После 100 очков — hardcore режим</string>
 </resources>

@@ -2,14 +2,22 @@
     <string name="app_name" translatable="false">Flappy Box</string>
     <string name="toy_name">Flappy Box</string>
     <string name="toy_summary">Tilt-controlled arcade game on Glyph display</string>
-    <string name="activate_toy">Activate Toy</string>
-    <string name="best_score">Best Score: %d</string>
+    <string name="activate_toy">Activate toy</string>
+    <string name="best_score">Best</string>
     <string name="hint_text">Sometimes the best thing to do is NOTHING.</string>
 
+    <string name="main_hint">Tilt to fly · long-press to boost</string>
+    <string name="main_preview_description">Preview of Flappy Box on the Glyph Matrix with the current settings</string>
+    <string name="settings_title">Game settings</string>
+    <string name="setting_gap">Gap size</string>
+    <string name="setting_spawn">Spawn interval, s</string>
+    <string name="setting_speed">Speed</string>
+    <string name="setting_bird">Bird size</string>
+
     <string name="intro_title">Flappy Box</string>
-    <string name="intro_control">• Tilt phone to control the bird</string>
-    <string name="intro_obstacles">• Fly through obstacles</string>
-    <string name="intro_boost">• Hold screen to boost speed (up to 5x)</string>
-    <string name="intro_difficulty">• Gap narrows every 20 points</string>
-    <string name="intro_hardcore">• After 100 points — hardcore mode</string>
+    <string name="intro_control">Tilt the phone to steer the bird</string>
+    <string name="intro_obstacles">Fly through the gaps</string>
+    <string name="intro_boost">Long-press the Glyph button to boost (up to 5x)</string>
+    <string name="intro_difficulty">The gap narrows every 20 points</string>
+    <string name="intro_hardcore">After 100 points: hardcore mode</string>
 </resources>

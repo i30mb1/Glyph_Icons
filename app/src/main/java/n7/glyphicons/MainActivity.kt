@@ -5,34 +5,19 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
+import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.statusBars
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.windowInsetsPadding
+import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
-import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -41,72 +26,81 @@ import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.lifecycle.compose.LocalLifecycleOwner
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.repeatOnLifecycle
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
-import n7.glyphicons.ui.theme.GlyphIconsTheme
+import androidx.compose.ui.unit.sp
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.LocalLifecycleOwner
+import androidx.lifecycle.repeatOnLifecycle
+import n7.glyph.ui.components.DotHeadline
+import n7.glyph.ui.components.GlyphMatrix
+import n7.glyph.ui.components.N7Button
+import n7.glyph.ui.components.N7Card
+import n7.glyph.ui.components.N7Divider
+import n7.glyph.ui.components.N7Stepper
+import n7.glyph.ui.components.ScoreDisplay
+import n7.glyph.ui.components.SectionLabel
+import n7.glyph.ui.components.SignatureLabel
+import n7.glyph.ui.family.MoreFromN7
+import n7.glyph.ui.matrix.Cell
+import n7.glyph.ui.theme.N7Colors
+import n7.glyph.ui.theme.N7GlyphTheme
+import n7.glyph.ui.theme.N7Type
+import n7.glyphicons.game.GameConfig
+import n7.glyphicons.game.GameConfigStorage
 import java.util.Locale
 
 class MainActivity : ComponentActivity() {
 
-    private lateinit var configStorage: n7.glyphicons.game.GameConfigStorage
+    private lateinit var configStorage: GameConfigStorage
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        enableEdgeToEdge()
         super.onCreate(savedInstanceState)
 
-        configStorage = n7.glyphicons.game.GameConfigStorage(this)
+        configStorage = GameConfigStorage(this)
         configStorage.loadConfig()
 
         setContent {
-            GlyphIconsTheme {
-                Scaffold(
-                    modifier = Modifier.fillMaxSize(),
-                    containerColor = Color.Black,
-                    contentWindowInsets = WindowInsets(0, 0, 0, 0)
-                ) {
-                    SetupScreen(
-                        modifier = Modifier.fillMaxSize(),
-                        onInstallWidget = {
-                            val intent = Intent().apply {
-                                component = ComponentName(
-                                    "com.nothing.thirdparty",
-                                    "com.nothing.thirdparty.matrix.toys.manager.ToysManagerActivity"
-                                )
-                            }
-                            startActivity(intent)
-                        },
-                        onConfigChanged = {
-                            configStorage.saveConfig()
+            N7GlyphTheme {
+                SetupScreen(
+                    onActivateToy = {
+                        val intent = Intent().apply {
+                            component = ComponentName(
+                                "com.nothing.thirdparty",
+                                "com.nothing.thirdparty.matrix.toys.manager.ToysManagerActivity",
+                            )
                         }
-                    )
-                }
+                        try {
+                            startActivity(intent)
+                        } catch (e: Exception) {
+                            // Older system versions have no Glyph Toys manager
+                        }
+                    },
+                    onConfigChanged = { configStorage.saveConfig() },
+                )
             }
         }
     }
 }
 
 @Composable
-fun SetupScreen(
-    modifier: Modifier = Modifier,
-    onInstallWidget: () -> Unit,
-    onConfigChanged: () -> Unit
+private fun SetupScreen(
+    onActivateToy: () -> Unit,
+    onConfigChanged: () -> Unit,
 ) {
-    val context = androidx.compose.ui.platform.LocalContext.current
-    val configStorage = remember { n7.glyphicons.game.GameConfigStorage(context) }
+    val context = LocalContext.current
+    val configStorage = remember { GameConfigStorage(context) }
     val lifecycleOwner = LocalLifecycleOwner.current
 
-    var gapSize by remember { mutableIntStateOf(n7.glyphicons.game.GameConfig.OBSTACLE_GAP_SIZE) }
-    var spawnInterval by remember { mutableFloatStateOf(n7.glyphicons.game.GameConfig.OBSTACLE_SPAWN_INTERVAL) }
-    var speed by remember { mutableFloatStateOf(n7.glyphicons.game.GameConfig.OBSTACLE_SPEED) }
-    var birdSize by remember { mutableIntStateOf(n7.glyphicons.game.GameConfig.BIRD_SIZE) }
+    var gapSize by remember { mutableIntStateOf(GameConfig.OBSTACLE_GAP_SIZE) }
+    var spawnInterval by remember { mutableFloatStateOf(GameConfig.OBSTACLE_SPAWN_INTERVAL) }
+    var speed by remember { mutableFloatStateOf(GameConfig.OBSTACLE_SPEED) }
+    var birdSize by remember { mutableIntStateOf(GameConfig.BIRD_SIZE) }
     var bestScore by remember { mutableIntStateOf(configStorage.getBestScore()) }
 
     LaunchedEffect(lifecycleOwner) {
@@ -115,247 +109,103 @@ fun SetupScreen(
         }
     }
 
-    Column(
-        modifier = modifier
-            .fillMaxSize()
-            .verticalScroll(rememberScrollState())
-            .windowInsetsPadding(WindowInsets.statusBars)
-            .windowInsetsPadding(WindowInsets.navigationBars)
-            .padding(16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Top
-    ) {
-        Spacer(modifier = Modifier.height(16.dp))
-
-        Card(
+    Surface(modifier = Modifier.fillMaxSize(), color = N7Colors.Ground) {
+        Column(
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 8.dp),
-            shape = RoundedCornerShape(16.dp),
-            colors = CardDefaults.cardColors(
-                containerColor = Color(0xFF1A1A1A)
-            ),
-            elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState())
+                .systemBarsPadding()
+                .padding(start = 24.dp, end = 24.dp, top = 32.dp, bottom = 24.dp),
+            verticalArrangement = Arrangement.spacedBy(24.dp),
         ) {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp),
-                contentAlignment = Alignment.Center
-            ) {
-                Text(
-                    text = stringResource(R.string.hint_text),
-                    style = MaterialTheme.typography.headlineSmall,
-                    textAlign = TextAlign.Center,
-                    textDecoration = if (bestScore > 100) TextDecoration.LineThrough else null,
-                    color = Color.White
+            Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                DotHeadline(lines = listOf("FLAPPY", "BOX"), fontSize = 56.sp)
+                SectionLabel(stringResource(R.string.main_hint))
+            }
+
+            Box(Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
+                GlyphMatrix(
+                    cells = previewFrame(gapSize, birdSize),
+                    modifier = Modifier.size(224.dp),
+                    contentDescription = stringResource(R.string.main_preview_description),
                 )
             }
-        }
 
-        Spacer(modifier = Modifier.height(16.dp))
+            Row(verticalAlignment = Alignment.Bottom, horizontalArrangement = Arrangement.spacedBy(20.dp)) {
+                ScoreDisplay(value = bestScore, label = stringResource(R.string.best_score))
+                Text(
+                    text = stringResource(R.string.hint_text),
+                    style = N7Type.BodyS,
+                    color = N7Colors.InkMuted,
+                    textDecoration = if (bestScore > 100) TextDecoration.LineThrough else null,
+                    modifier = Modifier.weight(1f),
+                )
+            }
 
-        Text(
-            text = stringResource(R.string.best_score, bestScore),
-            style = MaterialTheme.typography.titleMedium,
-            color = Color.White
-        )
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        GamePreview(
-            gapSize = gapSize,
-            birdSize = birdSize
-        )
-
-        Spacer(modifier = Modifier.height(32.dp))
-
-        Button(
-            onClick = onInstallWidget,
-            colors = ButtonDefaults.buttonColors(
-                containerColor = Color.Gray
+            N7Button(
+                text = stringResource(R.string.activate_toy),
+                onClick = onActivateToy,
+                modifier = Modifier.fillMaxWidth(),
             )
-        ) {
-            Text(stringResource(R.string.activate_toy))
-        }
 
-        Spacer(modifier = Modifier.height(32.dp))
-
-        ParameterControl(
-            label = "Gap Size",
-            value = gapSize,
-            onDecrease = {
-                if (gapSize > 4) {
-                    gapSize--
-                    n7.glyphicons.game.GameConfig.OBSTACLE_GAP_SIZE = gapSize
-                    onConfigChanged()
-                }
-            },
-            onIncrease = {
-                if (gapSize < 15) {
-                    gapSize++
-                    n7.glyphicons.game.GameConfig.OBSTACLE_GAP_SIZE = gapSize
-                    onConfigChanged()
-                }
-            }
-        )
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        ParameterControl(
-            label = "Spawn Interval (s)",
-            value = spawnInterval,
-            onDecrease = {
-                if (spawnInterval > 1f) {
-                    spawnInterval -= 0.5f
-                    n7.glyphicons.game.GameConfig.OBSTACLE_SPAWN_INTERVAL = spawnInterval
-                    onConfigChanged()
-                }
-            },
-            onIncrease = {
-                if (spawnInterval < 5f) {
-                    spawnInterval += 0.5f
-                    n7.glyphicons.game.GameConfig.OBSTACLE_SPAWN_INTERVAL = spawnInterval
-                    onConfigChanged()
-                }
-            }
-        )
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        ParameterControl(
-            label = "Speed",
-            value = speed,
-            onDecrease = {
-                if (speed > 3f) {
-                    speed -= 1f
-                    n7.glyphicons.game.GameConfig.OBSTACLE_SPEED = speed
-                    onConfigChanged()
-                }
-            },
-            onIncrease = {
-                if (speed < 15f) {
-                    speed += 1f
-                    n7.glyphicons.game.GameConfig.OBSTACLE_SPEED = speed
-                    onConfigChanged()
-                }
-            }
-        )
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        ParameterControl(
-            label = "Bird Size",
-            value = birdSize,
-            onDecrease = {
-                if (birdSize > 2) {
-                    birdSize--
-                    n7.glyphicons.game.GameConfig.BIRD_SIZE = birdSize
-                    onConfigChanged()
-                }
-            },
-            onIncrease = {
-                if (birdSize < 8) {
-                    birdSize++
-                    n7.glyphicons.game.GameConfig.BIRD_SIZE = birdSize
-                    onConfigChanged()
-                }
-            }
-        )
-    }
-}
-
-@Composable
-fun GamePreview(
-    gapSize: Int,
-    birdSize: Int
-) {
-    Box(
-        modifier = Modifier
-            .size(250.dp)
-            .background(Color.Black)
-            .border(2.dp, Color.White)
-    ) {
-        Canvas(modifier = Modifier.fillMaxSize()) {
-            val cellSize = size.width / 25f
-
-            val birdX = 12f
-            val birdY = 12f
-            val halfBirdSize = birdSize / 2f
-
-            for (y in 0 until birdSize) {
-                for (x in 0 until birdSize) {
-                    val targetY = (birdY - halfBirdSize + y) * cellSize
-                    val targetX = (birdX - halfBirdSize + x) * cellSize
-                    drawRect(
-                        color = Color.White,
-                        topLeft = Offset(targetX, targetY),
-                        size = androidx.compose.ui.geometry.Size(cellSize, cellSize)
+            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                SectionLabel(stringResource(R.string.settings_title))
+                N7Card(Modifier.fillMaxWidth()) {
+                    N7Stepper(
+                        label = stringResource(R.string.setting_gap),
+                        value = gapSize.toString(),
+                        canDecrease = gapSize > 4,
+                        canIncrease = gapSize < 15,
+                        onDecrease = { gapSize--; GameConfig.OBSTACLE_GAP_SIZE = gapSize; onConfigChanged() },
+                        onIncrease = { gapSize++; GameConfig.OBSTACLE_GAP_SIZE = gapSize; onConfigChanged() },
+                    )
+                    N7Divider()
+                    N7Stepper(
+                        label = stringResource(R.string.setting_spawn),
+                        value = "%.1f".format(Locale.US, spawnInterval),
+                        canDecrease = spawnInterval > 1f,
+                        canIncrease = spawnInterval < 5f,
+                        onDecrease = { spawnInterval -= 0.5f; GameConfig.OBSTACLE_SPAWN_INTERVAL = spawnInterval; onConfigChanged() },
+                        onIncrease = { spawnInterval += 0.5f; GameConfig.OBSTACLE_SPAWN_INTERVAL = spawnInterval; onConfigChanged() },
+                    )
+                    N7Divider()
+                    N7Stepper(
+                        label = stringResource(R.string.setting_speed),
+                        value = "%.0f".format(Locale.US, speed),
+                        canDecrease = speed > 3f,
+                        canIncrease = speed < 15f,
+                        onDecrease = { speed -= 1f; GameConfig.OBSTACLE_SPEED = speed; onConfigChanged() },
+                        onIncrease = { speed += 1f; GameConfig.OBSTACLE_SPEED = speed; onConfigChanged() },
+                    )
+                    N7Divider()
+                    N7Stepper(
+                        label = stringResource(R.string.setting_bird),
+                        value = birdSize.toString(),
+                        canDecrease = birdSize > 2,
+                        canIncrease = birdSize < 8,
+                        onDecrease = { birdSize--; GameConfig.BIRD_SIZE = birdSize; onConfigChanged() },
+                        onIncrease = { birdSize++; GameConfig.BIRD_SIZE = birdSize; onConfigChanged() },
                     )
                 }
             }
 
-            val obstacleX = 20f
-            val gapY = 12
-            val gapTop = gapY - gapSize / 2
-            val gapBottom = gapY + gapSize / 2
+            MoreFromN7(Modifier.fillMaxWidth())
 
-            for (y in 0 until 25) {
-                if (y !in gapTop..gapBottom) {
-                    for (x in 0 until 2) {
-                        val posX = (obstacleX + x) * cellSize
-                        val posY = y * cellSize
-                        drawRect(
-                            color = Color.Gray,
-                            topLeft = Offset(posX, posY),
-                            size = androidx.compose.ui.geometry.Size(cellSize, cellSize)
-                        )
-                    }
-                }
-            }
+            SignatureLabel(Modifier.align(Alignment.CenterHorizontally))
         }
     }
 }
 
-@Composable
-fun ParameterControl(
-    label: String,
-    value: Number,
-    onDecrease: () -> Unit,
-    onIncrease: () -> Unit
-) {
-    Column(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Text(
-            text = label,
-            style = MaterialTheme.typography.titleMedium,
-            color = Color.White
-        )
-        Spacer(modifier = Modifier.height(8.dp))
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.Center
-        ) {
-            OutlinedButton(onClick = onDecrease) {
-                Text("-", color = Color.White)
-            }
-            Spacer(modifier = Modifier.width(16.dp))
-            Text(
-                text = when (value) {
-                    is Float -> "%.1f".format(Locale.US, value)
-                    else -> value.toString()
-                },
-                style = MaterialTheme.typography.headlineMedium,
-                modifier = Modifier.width(80.dp),
-                textAlign = TextAlign.Center,
-                color = Color.White
-            )
-            Spacer(modifier = Modifier.width(16.dp))
-            OutlinedButton(onClick = onIncrease) {
-                Text("+", color = Color.White)
-            }
+/** The bird in the middle and one pipe on the right, with the configured gap, as the matrix shows it. */
+private fun previewFrame(gapSize: Int, birdSize: Int): List<Cell> = buildList {
+    val half = birdSize / 2
+    for (y in 0 until birdSize) for (x in 0 until birdSize) add(Cell(12 - half + x, 12 - half + y, 1f))
+    val gapTop = 12 - gapSize / 2
+    val gapBottom = 12 + gapSize / 2
+    for (y in 0 until 25) {
+        if (y < gapTop || y > gapBottom) {
+            add(Cell(19, y, 0.5f))
+            add(Cell(20, y, 0.5f))
         }
     }
 }

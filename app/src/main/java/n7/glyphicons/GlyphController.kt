@@ -3,6 +3,7 @@ package n7.glyphicons
 import android.content.ComponentName
 import android.content.Context
 import android.util.Log
+import com.nothing.ketchum.Glyph
 import com.nothing.ketchum.GlyphMatrixManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -85,6 +86,8 @@ class GlyphController(
     }
 
     override fun onServiceConnected(p0: ComponentName?) {
+        // SDK 2.0 supports several devices; Flappy Box needs the 25x25 matrix of Phone (3).
+        glyphManager.register(Glyph.DEVICE_23112)
         glyphManager.setGlyphMatrixTimeout(false)
         gameLoop.start()
         Log.d("N7", "onServiceConnected $p0")

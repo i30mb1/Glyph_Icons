@@ -9,3 +9,5 @@
 .cxx
 local.properties
 libs/glyph-matrix-sdk-extracted/*
+
+play-service-account.json

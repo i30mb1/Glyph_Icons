@@ -16,6 +16,7 @@
         <activity
             android:name="n7.glyphicons.MainActivity"
             android:exported="true"
+            android:screenOrientation="portrait"
             android:label="@string/app_name"
             android:theme="@style/Theme.GlyphIcons">
             <intent-filter>
@@ -27,7 +28,8 @@
 
         <activity
             android:name=".ToyIntroductionActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="portrait" />
 
         <service
             android:name=".GlyphToyService"

@@ -1,0 +1,5 @@
+# R8 keep rules of this app. AGP passes every file in src/main/keepRules to R8.
+# Libraries bring their own rules; add here only what this app's code needs. Keep rules narrow.
+
+# The Glyph Matrix SDK is called through AIDL/Binder; keep it intact.
+-keep class com.nothing.ketchum.** { *; }

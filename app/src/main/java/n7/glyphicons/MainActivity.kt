@@ -2,19 +2,25 @@ package n7.glyphicons
 
 import android.content.ComponentName
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
 import androidx.activity.ComponentActivity
+import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.systemBarsPadding
+import androidx.compose.foundation.layout.systemBars
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Surface
@@ -59,7 +65,11 @@ class MainActivity : ComponentActivity() {
     private lateinit var configStorage: GameConfigStorage
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        enableEdgeToEdge()
+        // The screen is always black: white status and navigation bar icons, also when the phone is in light theme.
+        enableEdgeToEdge(
+            statusBarStyle = SystemBarStyle.dark(Color.TRANSPARENT),
+            navigationBarStyle = SystemBarStyle.dark(Color.TRANSPARENT),
+        )
         super.onCreate(savedInstanceState)
 
         configStorage = GameConfigStorage(this)
@@ -113,13 +123,18 @@ private fun SetupScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
+                // The status bar stays outside the scroll, so scrolled cards never run under the clock.
+                .windowInsetsPadding(WindowInsets.systemBars.only(WindowInsetsSides.Top + WindowInsetsSides.Horizontal))
                 .verticalScroll(rememberScrollState())
-                .systemBarsPadding()
+                // The gesture bar is inside it: the content scrolls under it, and the end of the page clears it.
+                .windowInsetsPadding(WindowInsets.systemBars.only(WindowInsetsSides.Bottom))
                 .padding(start = 24.dp, end = 24.dp, top = 32.dp, bottom = 24.dp),
             verticalArrangement = Arrangement.spacedBy(24.dp),
         ) {
-            Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+            // The name and, right under it, one line that says what the app is; then the controls hint as before.
+            Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
                 DotHeadline(lines = listOf("FLAPPY", "BOX"), fontSize = 56.sp)
+                Text(stringResource(R.string.tagline), style = N7Type.Body, color = N7Colors.InkMuted)
                 SectionLabel(stringResource(R.string.main_hint))
             }
 

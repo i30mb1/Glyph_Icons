@@ -1,6 +1,8 @@
 <resources>
     <string name="app_name" translatable="false">Flappy Box</string>
     <string name="toy_name">Flappy Box</string>
+    <!-- One line under the app name: what the app is. 40 characters at most so it stays on one line. -->
+    <string name="tagline">A tilt arcade game for the Glyph Matrix.</string>
     <string name="toy_summary">Tilt-controlled arcade game on Glyph display</string>
     <string name="activate_toy">Activate toy</string>
     <string name="best_score">Best</string>

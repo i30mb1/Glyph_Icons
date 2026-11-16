@@ -24,8 +24,8 @@ android {
         applicationId = "n7.glyphicons"
         minSdk = 35
         targetSdk = 37
-        versionCode = 5
-        versionName = "4.0.1"
+        versionCode = 6
+        versionName = "4.1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -48,9 +48,12 @@ android {
 
     buildTypes {
         release {
-            isMinifyEnabled = false
+            // R8: shrinks, optimizes and renames the code and drops unused resources.
+            // Keep rules: every file in src/main/keepRules/.
+            optimization {
+                enable = true
+            }
             signingConfig = signingConfigs.findByName("upload") ?: signingConfigs.getByName("debug")
-            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
         }
     }
 
@@ -67,7 +70,7 @@ java {
 
 dependencies {
     implementation(files("../libs/glyph-matrix-sdk-2.0.aar"))
-    implementation("com.github.i30mb1:n7-glyph-ui:0.2.0")
+    implementation(libs.n7.glyph.ui)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)

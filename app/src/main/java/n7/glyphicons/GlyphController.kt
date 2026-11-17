@@ -14,6 +14,11 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.scan
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import android.os.SystemClock
+import n7.glyph.ui.support.Supporter
+import n7.glyph.ui.support.SupporterIntro
 import n7.glyphicons.game.GameConfig
 import n7.glyphicons.game.GameLoop
 import n7.glyphicons.game.GameRenderer
@@ -89,7 +94,22 @@ class GlyphController(
         // SDK 2.0 supports several devices; Flappy Box needs the 25x25 matrix of Phone (3).
         glyphManager.register(Glyph.DEVICE_23112)
         glyphManager.setGlyphMatrixTimeout(false)
-        gameLoop.start()
+        // Supporters first see the coffee (once after the purchase) or the sparkles round the rim, then the game.
+        val intro = SupporterIntro(Supporter.state(context))
+        if (intro.durationMs <= 0) {
+            gameLoop.start()
+        } else {
+            scope.launch {
+                val start = SystemClock.uptimeMillis()
+                while (true) {
+                    val t = SystemClock.uptimeMillis() - start
+                    if (t >= intro.durationMs) break
+                    glyphManager.setMatrixFrame(intro.frame(t))
+                    delay(40)
+                }
+                gameLoop.start()
+            }
+        }
         Log.d("N7", "onServiceConnected $p0")
     }
 

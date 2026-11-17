@@ -22,4 +22,11 @@
     <string name="intro_boost">Long-press the Glyph button to boost (up to 5x)</string>
     <string name="intro_difficulty">The gap narrows every 20 points</string>
     <string name="intro_hardcore">After 100 points: hardcore mode</string>
+    <string name="theme_title">Look</string>
+    <string name="theme_classic">Classic</string>
+    <string name="theme_pipes">Pipes</string>
+    <string name="theme_bricks">Bricks</string>
+    <string name="theme_laser">Laser</string>
+    <string name="theme_locked">For supporters: buy a coffee below</string>
+    <string name="supporter_perk">Three more looks: pipes, bricks and laser</string>
 </resources>

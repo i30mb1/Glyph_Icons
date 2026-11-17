@@ -20,4 +20,11 @@
     <string name="intro_boost">Зажми кнопку Glyph для ускорения (до 5x)</string>
     <string name="intro_difficulty">Каждые 20 очков проход сужается</string>
     <string name="intro_hardcore">После 100 очков — hardcore режим</string>
+    <string name="theme_title">Вид</string>
+    <string name="theme_classic">Классика</string>
+    <string name="theme_pipes">Трубы</string>
+    <string name="theme_bricks">Кирпичи</string>
+    <string name="theme_laser">Лазер</string>
+    <string name="theme_locked">Для Supporter: угости кофе ниже</string>
+    <string name="supporter_perk">Ещё три вида: трубы, кирпичи и лазер</string>
 </resources>

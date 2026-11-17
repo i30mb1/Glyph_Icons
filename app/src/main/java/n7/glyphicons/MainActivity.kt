@@ -52,6 +52,19 @@ import n7.glyph.ui.components.ScoreDisplay
 import n7.glyph.ui.components.SectionLabel
 import n7.glyph.ui.components.SignatureLabel
 import n7.glyph.ui.family.MoreFromN7
+import n7.glyph.ui.support.SupporterSection
+import n7.glyph.ui.support.rememberSupporter
+import n7.glyphicons.game.FlappyTheme
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.foundation.selection.selectable
+import androidx.compose.foundation.border
+import androidx.compose.foundation.background
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.semantics.Role
 import n7.glyph.ui.matrix.Cell
 import n7.glyph.ui.theme.N7Colors
 import n7.glyph.ui.theme.N7GlyphTheme
@@ -112,6 +125,9 @@ private fun SetupScreen(
     var speed by remember { mutableFloatStateOf(GameConfig.OBSTACLE_SPEED) }
     var birdSize by remember { mutableIntStateOf(GameConfig.BIRD_SIZE) }
     var bestScore by remember { mutableIntStateOf(configStorage.getBestScore()) }
+    val supporter = rememberSupporter()
+    val supporterOwned by supporter.owned.collectAsState()
+    var theme by remember(supporterOwned) { mutableStateOf(FlappyTheme.current(context)) }
 
     LaunchedEffect(lifecycleOwner) {
         lifecycleOwner.lifecycle.repeatOnLifecycle(Lifecycle.State.RESUMED) {
@@ -140,7 +156,7 @@ private fun SetupScreen(
 
             Box(Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
                 GlyphMatrix(
-                    cells = previewFrame(gapSize, birdSize),
+                    cells = previewFrame(gapSize, birdSize, theme),
                     modifier = Modifier.size(224.dp),
                     contentDescription = stringResource(R.string.main_preview_description),
                 )
@@ -204,6 +220,13 @@ private fun SetupScreen(
                 }
             }
 
+            ThemeCard(theme, supporterOwned) {
+                theme = it
+                FlappyTheme.save(context, it)
+            }
+
+            SupporterSection(perks = listOf(stringResource(R.string.supporter_perk)), supporter = supporter)
+
             MoreFromN7(Modifier.fillMaxWidth())
 
             SignatureLabel(Modifier.align(Alignment.CenterHorizontally))
@@ -211,16 +234,60 @@ private fun SetupScreen(
     }
 }
 
-/** The bird in the middle and one pipe on the right, with the configured gap, as the matrix shows it. */
-private fun previewFrame(gapSize: Int, birdSize: Int): List<Cell> = buildList {
+/** The bird in the middle and one pipe on the right, with the configured gap, in [theme], as the matrix shows it. */
+private fun previewFrame(gapSize: Int, birdSize: Int, theme: FlappyTheme = FlappyTheme.CLASSIC): List<Cell> = buildList {
     val half = birdSize / 2
-    for (y in 0 until birdSize) for (x in 0 until birdSize) add(Cell(12 - half + x, 12 - half + y, 1f))
+    for (y in 0 until birdSize) for (x in 0 until birdSize) {
+        if (theme.box(x, y, birdSize)) add(Cell(12 - half + x, 12 - half + y, 1f))
+    }
     val gapTop = 12 - gapSize / 2
     val gapBottom = 12 + gapSize / 2
-    for (y in 0 until 25) {
-        if (y < gapTop || y > gapBottom) {
-            add(Cell(19, y, 0.5f))
-            add(Cell(20, y, 0.5f))
+    for (y in 0 until 25) for (dx in -1..2) {
+        val level = theme.obstacle(dx, y, gapTop, gapBottom, 0L)
+        if (level > 0) add(Cell(19 + dx, y, (level / 1600f).coerceIn(0.15f, 1f)))
+    }
+}
+
+/** The look of the obstacles and the box: CLASSIC for everyone, three more for supporters, each with a preview. */
+@Composable
+private fun ThemeCard(theme: FlappyTheme, owned: Boolean, onPick: (FlappyTheme) -> Unit) {
+    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+        SectionLabel(stringResource(R.string.theme_title))
+        N7Card(Modifier.fillMaxWidth()) {
+            for (t in FlappyTheme.entries) {
+                val unlocked = !t.supporter || owned
+                Row(
+                    Modifier
+                        .fillMaxWidth()
+                        .clip(RoundedCornerShape(16.dp))
+                        .selectable(selected = t == theme, enabled = unlocked, role = Role.RadioButton) { onPick(t) }
+                        .alpha(if (unlocked) 1f else 0.45f)
+                        .padding(vertical = 8.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(14.dp),
+                ) {
+                    Box(
+                        Modifier
+                            .size(20.dp)
+                            .border(2.dp, if (t == theme) N7Colors.Ink else N7Colors.ControlBorder, CircleShape)
+                            .padding(5.dp),
+                    ) {
+                        if (t == theme) Box(Modifier.fillMaxSize().background(N7Colors.Ink, CircleShape))
+                    }
+                    Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(2.dp)) {
+                        Text(stringResource(themeName(t)), style = N7Type.Title, color = N7Colors.Ink)
+                        if (!unlocked) Text(stringResource(R.string.theme_locked), style = N7Type.BodyS, color = N7Colors.InkMuted)
+                    }
+                    GlyphMatrix(cells = previewFrame(8, 4, t), modifier = Modifier.size(56.dp), glow = false)
+                }
+            }
         }
     }
+}
+
+private fun themeName(theme: FlappyTheme): Int = when (theme) {
+    FlappyTheme.CLASSIC -> R.string.theme_classic
+    FlappyTheme.PIPES -> R.string.theme_pipes
+    FlappyTheme.BRICKS -> R.string.theme_bricks
+    FlappyTheme.LASER -> R.string.theme_laser
 }

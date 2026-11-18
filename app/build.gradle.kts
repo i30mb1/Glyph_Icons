@@ -24,8 +24,8 @@ android {
         applicationId = "n7.glyphicons"
         minSdk = 35
         targetSdk = 37
-        versionCode = 7
-        versionName = "4.2.0"
+        versionCode = 8
+        versionName = "4.2.1"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }

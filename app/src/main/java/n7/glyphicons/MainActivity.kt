@@ -52,7 +52,7 @@ import n7.glyph.ui.components.ScoreDisplay
 import n7.glyph.ui.components.SectionLabel
 import n7.glyph.ui.components.SignatureLabel
 import n7.glyph.ui.family.MoreFromN7
-import n7.glyph.ui.support.SupporterSection
+import n7.glyph.ui.support.SupporterCorner
 import n7.glyph.ui.support.rememberSupporter
 import n7.glyphicons.game.FlappyTheme
 import androidx.compose.runtime.collectAsState
@@ -148,10 +148,14 @@ private fun SetupScreen(
             verticalArrangement = Arrangement.spacedBy(24.dp),
         ) {
             // The name and, right under it, one line that says what the app is; then the controls hint as before.
-            Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                DotHeadline(lines = listOf("FLAPPY", "BOX"), fontSize = 56.sp)
-                Text(stringResource(R.string.tagline), style = N7Type.Body, color = N7Colors.InkMuted)
-                SectionLabel(stringResource(R.string.main_hint))
+            // The supporter button sits in the top-right corner, beside the short first line of the name.
+            Box(Modifier.fillMaxWidth()) {
+                Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                    DotHeadline(lines = listOf("FLAPPY", "BOX"), fontSize = 56.sp)
+                    Text(stringResource(R.string.tagline), style = N7Type.Body, color = N7Colors.InkMuted)
+                    SectionLabel(stringResource(R.string.main_hint))
+                }
+                SupporterCorner(perks = listOf(stringResource(R.string.supporter_perk)), supporter = supporter, modifier = Modifier.align(Alignment.TopEnd))
             }
 
             Box(Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
@@ -224,8 +228,6 @@ private fun SetupScreen(
                 theme = it
                 FlappyTheme.save(context, it)
             }
-
-            SupporterSection(perks = listOf(stringResource(R.string.supporter_perk)), supporter = supporter)
 
             MoreFromN7(Modifier.fillMaxWidth())
 

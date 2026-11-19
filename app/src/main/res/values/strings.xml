@@ -27,6 +27,6 @@
     <string name="theme_pipes">Pipes</string>
     <string name="theme_bricks">Bricks</string>
     <string name="theme_laser">Laser</string>
-    <string name="theme_locked">For supporters: buy a coffee below</string>
+    <string name="theme_locked">For supporters: tap $ at the top</string>
     <string name="supporter_perk">Three more looks: pipes, bricks and laser</string>
 </resources>

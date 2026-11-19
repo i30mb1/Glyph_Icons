@@ -25,6 +25,6 @@
     <string name="theme_pipes">Трубы</string>
     <string name="theme_bricks">Кирпичи</string>
     <string name="theme_laser">Лазер</string>
-    <string name="theme_locked">Для Supporter: угости кофе ниже</string>
+    <string name="theme_locked">Для Supporter: нажми $ вверху</string>
     <string name="supporter_perk">Ещё три вида: трубы, кирпичи и лазер</string>
 </resources>
